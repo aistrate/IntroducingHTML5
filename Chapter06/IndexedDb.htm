@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web SQL Database - Transactions</title>
+    <script>
+
+        function importIndexedDB(prefix) {
+            var indexedDB = window[prefix + 'IndexedDB'],
+                IDBTransaction = window[prefix + 'IDBTransaction'];
+
+            if (indexedDB !== undefined) {
+                window.indexedDB = indexedDB;
+            }
+
+            if (IDBTransaction !== undefined) {
+                window.IDBTransaction = IDBTransaction;
+            }
+        }
+
+        'moz webkit o ms'.split(' ').forEach(function(vendor) {
+            importIndexedDB(vendor);
+        });
+
+
+        var request = indexedDB.open('videos'),
+            db = null,
+            version = '0.1.4';
+
+        request.onsuccess = function (event) {
+            db = event.target.result;
+
+            if (version != db.version) {
+                var verRequest = db.setVersion(version);
+
+                verRequest.onsuccess = function (event) {
+                    //db.deleteObjectStore('blockbusters');
+
+                    var store = db.createObjectStore('blockbusters', {
+                        keyPath: 'title',
+                        autoIncrement: false
+                    });
+
+                    store.createIndex('director', 'director', { unique: false });
+
+                    console.log('IndexedDB: database version ' + version + ' initialized successfully.');
+                };
+
+                verRequest.onerror = function (event) {
+                    alert('Unable to set the version: ' + event.target.message);
+                };
+            }
+            else {
+                console.log('IndexedDB: database opened successfully.');
+            }
+        };
+
+        request.onerror = function (event) {
+            alert('Something failed: ' + event.target.message);
+        };
+
+
+        var READ_WRITE = IDBTransaction.READ_WRITE,
+            READ_ONLY = IDBTransaction.READ_ONLY;
+
+        function addObject() {
+//            var video = {
+//                title: "Belly Dance Bruce - Final Strike",
+//                date: (new Date).getTime(),
+//                director: "Bruce Awsome",
+//                length: 169,    // in minutes
+//                rating: 10,
+//                cover: "/images/wobble.jpg"
+//            };
+            var video = {
+                title: "Bruce Almighty",
+                date: (new Date).getTime(),
+                director: "Tom Shadyac",
+                length: 101,
+                rating: 8,
+                cover: "/images/wobble.jpg"
+            };
+
+            var transaction = db.transaction(['blockbusters'], READ_WRITE),
+                store = transaction.objectStore('blockbusters'),
+                request = store.put(video);
+
+            request.onsuccess = function (event) {
+                alert('Object successfully added/updated into object store.');
+            };
+
+            request.onerror = function (event) {
+                alert('Error adding/updating object');
+            };
+        }
+
+        function retrieveObjects() {
+            find(function (data) {
+                return data.rating > 5;
+            }, function (found) {
+                alert('Found ' + found.length + ' videos with a high rating');
+
+                found.forEach(function (d) {
+                    alert(JSON.stringify(d));
+                });
+            });
+        }
+
+        function find(filter, callback) {
+            var transaction = db.transaction(['blockbusters'], READ_ONLY),
+                store = transaction.objectStore('blockbusters'),
+                data = [];
+
+            var request = store.openCursor();
+
+            request.onsuccess = function (event) {
+                var cursor = event.target.result;
+
+                if (cursor) {
+                    if (filter(cursor.value) === true) {
+                        data.push(cursor.value);
+                    }
+
+                    cursor.continue();
+                } else {
+                    callback(data);
+                }
+            };
+        }
+
+        function deleteObject() {
+            var key = 'Bruce Almighty',
+                transaction = db.transaction(['blockbusters'], READ_WRITE),
+                store = transaction.objectStore('blockbusters'),
+                request = store.delete(key);
+
+            request.onsuccess = function (event) {
+                alert('Object successfully deleted from object store.');
+            };
+
+            request.onerror = function (event) {
+                alert('Error deleting object');
+            };
+        }
+
+    </script>
+</head>
+<body>
+
+    <p><input type="button" id="AddObject" value="Add Object" onclick="addObject();" /></p>
+
+    <p><input type="button" id="RetrieveObjects" value="Retrieve Objects" onclick="retrieveObjects();" /></p>
+
+    <p><input type="button" id="DeleteObject" value="Delete Object" onclick="deleteObject();" /></p>
+
+</body>
+</html>

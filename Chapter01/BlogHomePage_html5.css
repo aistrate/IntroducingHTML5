@@ -1,0 +1,23 @@
+/* @import url("default.css"); */
+
+header, nav, footer, article
+{
+    display: block;
+}
+
+nav
+{
+    float: left;
+    width: 20%;
+}
+
+article
+{
+    float: right;
+    width: 79%;
+}
+
+footer
+{
+    clear: both;
+}

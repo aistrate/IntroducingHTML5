@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web SQL Database - Transactions</title>
+    <script>
+
+        var db = openDatabase('foo', '1.0', 'foo', 1024);
+
+        db.transaction(function (tx) {
+            tx.executeSql('CREATE TABLE foo (id unique, text)');
+            tx.executeSql('INSERT INTO foo (id, text) VALUES (1, "foobar")');
+        });
+
+        db.transaction(function (tx) {
+            tx.executeSql('DROP TABLE foo');
+
+            // known to fail - so should rollback the DROP statement
+            tx.executeSql('INSERT INTO foo (id, text) VALUES (1, "foobar")');
+        }, function (error) {
+            // error.message is "no such table: foo"
+            alert('Rollback triggered, the table "foo" was never dropped due to: ' + error.message);
+        });
+
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT * FROM foo', [], function (tx, results) {
+                alert('found ' + results.rows.length + ' row');
+            }, function (tx, error) {
+                // this will never execute
+                alert('something went wrong: ' + error.message);
+            });
+        });
+
+    </script>
+</head>
+<body>
+</body>
+</html>

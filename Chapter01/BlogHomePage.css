@@ -1,0 +1,16 @@
+#sidebar
+{
+    float: left;
+    width: 20%;
+}
+
+.post
+{
+    float: right;
+    width: 79%;
+}
+
+#footer
+{
+    clear: both;
+}

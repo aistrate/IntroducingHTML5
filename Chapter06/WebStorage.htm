@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web Storage</title>
+    <script>
+
+        //localStorage.superHero = "Remy";
+
+        //alert(localStorage.superHero);
+        //alert(localStorage.getItem('superHero'));
+
+        for (var i = 0; i < localStorage.length; i++) {
+            alert(localStorage.key(i) + '=' +
+                  localStorage.getItem(localStorage.key(i)));
+        }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

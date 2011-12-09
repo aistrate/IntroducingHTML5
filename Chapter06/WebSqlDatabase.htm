@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Web Storage</title>
+    <script>
+
+    var db;
+    if (window.openDatabase) {
+        db = openDatabase('mydb', '1.0', 'My first database', 2 * 1024 * 1024);
+
+        db.transaction(function (tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS tweets (id unique, screen_name, date integer, text)', [], function () {
+                // now go and load the table up with tweets
+            });
+        });
+    }
+
+    </script>
+</head>
+<body>
+</body>
+</html>

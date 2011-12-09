@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Geolocation</title>
+    <script>
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+            //alert('We found you!');
+            alert(position.coords.latitude + '; ' + position.coords.longitude +
+                  '(' + position.coords.accuracy + ' m accuracy)');
+            //showMap(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
+        }, function (error) {
+            alert('Error');
+        });
+
+    </script>
+</head>
+<body>
+</body>
+</html>

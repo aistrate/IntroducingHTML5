@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<title>Simple drag demo</title>
+<style>
+    #drop
+    {
+        height: 100px;
+        border: 5px solid #ccc;
+    }
+</style>
+<img src="http://img.tweetimag.es/i/rem" alt="@rem" />
+<img src="http://img.tweetimag.es/i/brucel" alt="@brucel" />
+<p>
+    Some text</p>
+<p>
+    <a href="http://www.amazon.com">Amazon.com</a></p>
+<div draggable="true" dropzone="copy">
+    This element be draggable</div>
+<div id="drop">
+</div>
+<script>
+
+    var drop = document.getElementById('drop');
+
+    var dragIcon = document.createElement('img');
+    dragIcon.src = 'http://img.tweetimag.es/i/twitter_m';
+
+    drop.ondrop = function (event) {
+        this.innerHTML += '<p>' + event.dataTransfer.getData('Text') + '</p>';
+        event.cancelBubble = true;
+        return false;
+    };
+
+    drop.ondragenter = function () { return false; };
+    drop.ondragover = function () { return false; };
+
+    var imgs = document.getElementsByTagName('img'),
+        i = imgs.length;
+    while (i--) {
+        imgs[i].ondragstart = function (event) {
+            event = event || window.event;
+
+            //event.dataTransfer.setData('Text', this.getAttribute('alt'));
+            //event.dataTransfer.setData('Text', this.getAttribute('src'));
+            event.dataTransfer.setData('text',
+                                       'This is the screen name for ' +
+                                       this.getAttribute('alt') +
+                                       ', whose image can be found here: ' +
+                                       this.getAttribute('src'));
+
+            event.dataTransfer.setDragImage(dragIcon, -10, -10);
+        };
+    }
+
+</script>

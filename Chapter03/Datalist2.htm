@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Datalist - without graceful degradation</title>
+</head>
+<body>
+    <form>
+    <label for="source">
+        How did you hear about us?</label>
+    <datalist id="sources">
+            <select name="source">
+                <option>please choose...</option>
+                <option value="Television">Television</option>
+                <option value="Radio">Radio</option>
+                <option value="Newspaper">Newspaper</option>
+                <option>Other</option>
+            </select>
+            If other, please specify:
+        </datalist>
+    <input id="source" name="source" list="sources">
+    <input type="submit" />
+    </form>
+</body>
+</html>

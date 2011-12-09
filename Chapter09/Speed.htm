@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Speed</title>
+</head>
+<body>
+    <div id="speed">
+    </div>
+    <script>
+
+        var speedElem = document.getElementById('speed');
+        speedElem.innerHTML = 'Speed';
+
+        navigator.geolocation.watchPosition(function (geodata) {
+            speedElem.innerHTML = 'Position: ' + geodata.coords.latitude + '; ' + geodata.coords.longitude +
+                                  '(' + geodata.coords.accuracy + ' m accuracy)<br />';
+
+            var speed = geodata.coords.speed;
+            if (speed === null || speed === 0) {
+                speedElem.innerHTML += "You're standing still!";
+            } else {
+                speedElem.innerHTML += 'Speed: ' + (speed * 3.6) + ' kph';
+            }
+        }, function (error) {
+            var errorTypes = {
+                1: 'Permission denied',
+                2: 'Position is not available',
+                3: 'Request timeout'
+                };
+            speedElem.innerHTML = errorTypes[error.code] + ": means we can't determine your position";
+        }, { enableHighAccuracy: true });
+
+    </script>
+</body>
+</html>
